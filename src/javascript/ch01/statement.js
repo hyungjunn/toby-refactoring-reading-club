@@ -1,8 +1,3 @@
-const fs = require('fs');
-
-const plays = JSON.parse(fs.readFileSync('plays.json', 'utf8'));
-const invoice = JSON.parse(fs.readFileSync('invoices.json', 'utf8'));
-
 function statement(invoice, plays) {
     let totalAmount = 0;
     let volumeCredits = 0;
@@ -49,5 +44,4 @@ function statement(invoice, plays) {
     return result;
 }
 
-// 함수 실행
-console.log(statement(invoice[0], plays));
+module.exports = statement;
