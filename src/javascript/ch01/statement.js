@@ -49,7 +49,7 @@ function statement(invoice, plays) {
         return volumeCredits;
     }
 
-    function totalAmount1() {
+    function totalAmount() {
         let totalAmount = 0;
         for (let perf of invoice.performances) {
             totalAmount += amountFor(perf);
@@ -61,10 +61,7 @@ function statement(invoice, plays) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience}석)\n`;
     }
 
-
-    let totalAmount = totalAmount1();
-
-    result += `총액: ${usd(totalAmount / 100)}\n`;
+    result += `총액: ${usd(totalAmount() / 100)}\n`;
     result += `적립 포인트: ${(totalVolumeCredits())}점\n`;
     return result;
 }
