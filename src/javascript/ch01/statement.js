@@ -1,5 +1,4 @@
 function statement(invoice, plays) {
-    let totalAmount = 0;
     let result = `청구 내역 (고객명: ${invoice.customer})\n`;
     const usd = new Intl.NumberFormat("en-US",
         {
@@ -53,6 +52,11 @@ function statement(invoice, plays) {
 
     for (let perf of invoice.performances) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience}석)\n`;
+    }
+
+    // TODO: 변수 초기화 문장 옮기기
+    let totalAmount = 0;
+    for (let perf of invoice.performances) {
         totalAmount += amountFor(perf);
     }
 
