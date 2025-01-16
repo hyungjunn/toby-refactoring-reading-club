@@ -49,16 +49,20 @@ function statement(invoice, plays) {
         return volumeCredits;
     }
 
+    function totalAmount1() {
+        let totalAmount = 0;
+        for (let perf of invoice.performances) {
+            totalAmount += amountFor(perf);
+        }
+        return totalAmount;
+    }
 
     for (let perf of invoice.performances) {
         result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience}석)\n`;
     }
 
-    // TODO: 변수 초기화 문장 옮기기
-    let totalAmount = 0;
-    for (let perf of invoice.performances) {
-        totalAmount += amountFor(perf);
-    }
+
+    let totalAmount = totalAmount1();
 
     result += `총액: ${usd(totalAmount / 100)}\n`;
     result += `적립 포인트: ${(totalVolumeCredits())}점\n`;
