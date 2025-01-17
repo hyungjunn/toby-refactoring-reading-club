@@ -1,5 +1,5 @@
-function renderPlainText(invoice, plays) {
-    let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+function renderPlainText(data, invoice, plays) {
+    let result = `청구 내역 (고객명: ${data.customer})\n`;
     const usd = new Intl.NumberFormat("en-US",
         {
             style: "currency", currency: "USD",
@@ -67,7 +67,9 @@ function renderPlainText(invoice, plays) {
 }
 
 function statement(invoice, plays) {
-    return renderPlainText(invoice, plays);
+    const statementData = {};
+    statementData.customer = invoice.customer;
+    return renderPlainText(statementData, invoice, plays);
 }
 
 module.exports = statement;
