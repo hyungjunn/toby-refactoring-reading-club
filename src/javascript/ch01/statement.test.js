@@ -1,6 +1,6 @@
-const {describe, expect, test} = require('@jest/globals');
-const statement = require('./statement');
-const fs = require('fs');
+import statement from "./statement.js";
+import fs from 'fs';
+import {expect, describe, test} from '@jest/globals';
 
 const plays = JSON.parse(fs.readFileSync('./ch01/plays.json', 'utf8'));
 const invoice = JSON.parse(fs.readFileSync('./ch01/invoices.json', 'utf8'));
