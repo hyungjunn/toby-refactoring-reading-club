@@ -28,9 +28,9 @@ class PerformanceCalculator {
 
     get volumeCredits() {
         let volumeCredits = 0;
-        volumeCredits += Math.max(aPerformance.audience - 30, 0);
-        if ("comedy" === aPerformance.play.type) {
-            volumeCredits += Math.floor(aPerformance.audience / 5);
+        volumeCredits += Math.max(this.performance.audience - 30, 0);
+        if ("comedy" === this.performance.play.type) {
+            volumeCredits += Math.floor(this.performance.audience / 5);
         }
         return volumeCredits;
     }
