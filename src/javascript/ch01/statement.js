@@ -24,19 +24,13 @@ function statement(invoice, plays) {
     return renderPlainText(statementData, plays);
 
     function totalVolumeCredits(data) {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.volumeCredits;
-        }
-        return result;
+        return data.performances
+            .reduce((total, p) => total + p.volumeCredits, 0);
     }
 
     function totalAmount(data) {
-        let result = 0;
-        for (let perf of data.performances) {
-            result += perf.amount;
-        }
-        return result;
+        return data.performances
+            .reduce((total, p) => total + p.amount, 0);
     }
 
     function enrichPerformance(aPerformance) {
