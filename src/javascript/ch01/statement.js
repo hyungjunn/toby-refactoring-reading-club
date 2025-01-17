@@ -8,7 +8,7 @@ function renderPlainText(data, plays) {
 
     function amountFor(aPerformance) {
         let result = 0;
-        switch (playFor(aPerformance).type) {
+        switch (aPerformance.play.type) {
             case "tragedy":
                 result = 40000;
                 if (aPerformance.audience > 30) {
@@ -28,14 +28,10 @@ function renderPlainText(data, plays) {
         return result;
     }
 
-    function playFor(aPerformance) {
-        return plays[aPerformance.playID];
-    }
-
     function volumeCreditsFor(aPerformance) {
         let volumeCredits = 0;
         volumeCredits += Math.max(aPerformance.audience - 30, 0);
-        if ("comedy" === playFor(aPerformance).type) {
+        if ("comedy" === aPerformance.play.type) {
             volumeCredits += Math.floor(aPerformance.audience / 5);
         }
         return volumeCredits;
@@ -58,7 +54,7 @@ function renderPlainText(data, plays) {
     }
 
     for (let perf of data.performances) {
-        result += ` ${playFor(perf).name}: ${usd(amountFor(perf) / 100)} (${perf.audience}석)\n`;
+        result += ` ${perf.play.name}: ${usd(amountFor(perf) / 100)} (${perf.audience}석)\n`;
     }
 
     result += `총액: ${usd(totalAmount() / 100)}\n`;
@@ -74,7 +70,12 @@ function statement(invoice, plays) {
 
     function enrichPerformance(aPerformance) {
         const result = Object.assign({}, aPerformance);
+        result.play = playFor(result)
         return result;
+
+        function playFor(aPerformance) {
+            return plays[aPerformance.playID];
+        }
     }
 }
 
