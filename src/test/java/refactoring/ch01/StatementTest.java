@@ -1,6 +1,5 @@
 package refactoring.ch01;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,8 +13,8 @@ class StatementTest {
 
     @BeforeEach
     void setUp() {
-        invoices = DataLoader.loadJsonFile("src/main/resources/invoices.json", new TypeReference<List<Invoice>>() {});
-        plays = DataLoader.loadJsonFile("src/main/resources/plays.json", new TypeReference<Map<String, Play>>() {});
+        invoices = DataLoader.loadInvoices("src/main/resources/invoices.json");
+        plays = DataLoader.loadPlays("src/main/resources/plays.json");
     }
 
     @Test
