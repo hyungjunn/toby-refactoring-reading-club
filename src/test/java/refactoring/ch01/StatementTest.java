@@ -29,7 +29,8 @@ class StatementTest {
             throw new RuntimeException("JSON 파일을 읽어오는데 실패하였습니다.", e);
         }
 
-        String result = Statement.statement(invoices.get(0), plays);
+        Statement statement = new Statement(invoices.get(0), plays);
+        String result = statement.generate();
         Assertions.assertThat(result).isEqualTo("""
                 청구 내역 (고객명: BigCo)
                  Hamlet: $650.00 (55석)
