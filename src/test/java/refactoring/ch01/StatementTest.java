@@ -3,6 +3,7 @@ package refactoring.ch01;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.FileInputStream;
@@ -12,23 +13,26 @@ import java.util.List;
 import java.util.Map;
 
 class StatementTest {
+    private List<Invoice> invoices;
+    private Map<String, Play> plays;
 
-    @Test
-    void testStatement() {
-        List<Invoice> invoices;
-        Map<String, Play> plays;
+    @BeforeEach
+    void setUp() {
+        invoices = loadJsonFile("src/main/resources/invoices.json", new TypeReference<List<Invoice>>() {});
+        plays = loadJsonFile("src/main/resources/plays.json", new TypeReference<Map<String, Play>>() {});
+    }
 
+    private <T> T loadJsonFile(String fileName, TypeReference<T> typeReference) {
         ObjectMapper objectMapper = new ObjectMapper();
-        try (
-                InputStream invoicesStream = new FileInputStream("src/main/resources/invoices.json");
-                InputStream playsStream = new FileInputStream("src/main/resources/plays.json")
-        ) {
-            invoices = objectMapper.readValue(invoicesStream, new TypeReference<List<Invoice>>() {});
-            plays = objectMapper.readValue(playsStream, new TypeReference<Map<String, Play>>() {});
+        try (InputStream inputStream = new FileInputStream(fileName)) {
+            return objectMapper.readValue(inputStream, typeReference);
         } catch (IOException e) {
             throw new RuntimeException("JSON 파일을 읽어오는데 실패하였습니다.", e);
         }
+    }
 
+    @Test
+    void testStatement() {
         Statement statement = new Statement(invoices.get(0), plays);
         String result = statement.generate();
         Assertions.assertThat(result).isEqualTo("""
