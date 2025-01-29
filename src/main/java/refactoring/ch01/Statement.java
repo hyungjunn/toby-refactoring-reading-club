@@ -27,19 +27,19 @@ public class Statement {
     }
 
     private double calculateTotalAmount() {
-        double totalAmount = 0;
+        double result = 0;
         for (Performance perf : invoice.performances()) {
-            totalAmount += amountFor(perf);
+            result += amountFor(perf);
         }
-        return totalAmount;
+        return result;
     }
 
     private int calculateTotalVolumeCredits() {
-        int volumeCredits = 0;
+        int result = 0;
         for (Performance perf : invoice.performances()) {
-            volumeCredits += volumeCreditsFor(perf);
+            result += volumeCreditsFor(perf);
         }
-        return volumeCredits;
+        return result;
     }
 
     private String formatUSD(double number) {
