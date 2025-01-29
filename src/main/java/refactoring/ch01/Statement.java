@@ -22,13 +22,18 @@ public class Statement {
             totalAmount += amountFor(perf);
         }
 
+        int volumeCredits = calculateTotalVolumeCredits();
+        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
+        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
+        return result.toString();
+    }
+
+    private int calculateTotalVolumeCredits() {
         int volumeCredits = 0;
         for (Performance perf : invoice.performances()) {
             volumeCredits += volumeCreditsFor(perf);
         }
-        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
-        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
-        return result.toString();
+        return volumeCredits;
     }
 
     private String formatUSD(double number) {
