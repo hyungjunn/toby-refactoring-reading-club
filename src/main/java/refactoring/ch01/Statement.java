@@ -1,6 +1,7 @@
 package refactoring.ch01;
 
 import java.text.NumberFormat;
+import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 
@@ -14,13 +15,16 @@ public class Statement {
     }
 
     public String generate() {
-        return renderPlainText();
+        StatementData data = new StatementData(invoice.customer(), invoice.performances());
+        return renderPlainText(data);
     }
 
-    private String renderPlainText() {
-        StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", invoice.customer()));
+    record StatementData(String customer, List<Performance> performances) {
+    }
 
-        for (Performance perf : invoice.performances()) {
+    private String renderPlainText(StatementData data) {
+        StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", data.customer));
+        for (Performance perf : data.performances) {
             result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
         }
         result.append(String.format("총액: %s\n", formatUSD(calculateTotalAmount())));
