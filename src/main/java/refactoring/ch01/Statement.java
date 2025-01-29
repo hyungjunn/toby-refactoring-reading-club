@@ -14,11 +14,14 @@ public class Statement {
     }
 
     public String generate() {
-        double totalAmount = 0;
         StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
             result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
+        }
+
+        double totalAmount = 0;
+        for (Performance perf : invoice.performances()) {
             totalAmount += amountFor(perf);
         }
 
