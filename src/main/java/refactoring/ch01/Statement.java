@@ -17,27 +17,30 @@ public class Statement {
         double totalAmount = 0;
         int volumeCredits = 0;
         StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", invoice.customer()));
-        NumberFormat format = NumberFormat.getCurrencyInstance(Locale.US);
 
         for (Performance perf : invoice.performances()) {
             volumeCredits += volumeCreditsFor(perf);
 
             // 청구 내역을 출력한다.
-            result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), format.format(amountFor(perf) / 100), perf.audience()));
+            result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), toUSD(amountFor(perf) / 100), perf.audience()));
             totalAmount += amountFor(perf);
         }
-        result.append(String.format("총액: %s\n", format.format(totalAmount / 100)));
+        result.append(String.format("총액: %s\n", toUSD(totalAmount / 100)));
         result.append(String.format("적립 포인트: %d점\n", volumeCredits));
         return result.toString();
     }
 
+    private String toUSD(double number) {
+        return NumberFormat.getCurrencyInstance(Locale.US).format(number);
+    }
+
     private int volumeCreditsFor(Performance perf) {
-        int volumeCredits = 0;
-        volumeCredits += Math.max(perf.audience() - 30, 0);
+        int result = 0;
+        result += Math.max(perf.audience() - 30, 0);
         if ("comedy".equals(playFor(perf).type())) {
-            volumeCredits += (int) Math.floor((double) perf.audience() / 5);
+            result += (int) Math.floor((double) perf.audience() / 5);
         }
-        return volumeCredits;
+        return result;
     }
 
     private Play playFor(Performance perf) {
