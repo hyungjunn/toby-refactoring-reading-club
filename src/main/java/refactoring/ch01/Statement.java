@@ -21,25 +21,7 @@ public class Statement {
 
         for (Performance perf : invoice.performances()) {
             Play play = plays.get(perf.playID());
-            double thisAmount = 0;
-
-            switch (play.type()) {
-                case "tragedy": // 비극
-                    thisAmount = 40000;
-                    if (perf.audience() > 30) {
-                        thisAmount += 1000 * (perf.audience() - 30);
-                    }
-                    break;
-                case "comedy": // 희극
-                    thisAmount = 30000;
-                    if (perf.audience() > 20) {
-                        thisAmount += 10000 + 500 * (perf.audience() - 20);
-                    }
-                    thisAmount += 300 * perf.audience();
-                    break;
-                default:
-                    throw new IllegalArgumentException(String.format("알 수 없는 장르: %s", play.type()));
-            }
+            double thisAmount = amountFor(perf, play);
 
             // 포인트를 적립한다.
             volumeCredits += Math.max(perf.audience() - 30, 0);
@@ -55,5 +37,27 @@ public class Statement {
         result.append(String.format("총액: %s\n", format.format(totalAmount / 100)));
         result.append(String.format("적립 포인트: %d점\n", volumeCredits));
         return result.toString();
+    }
+
+    private static double amountFor(Performance perf, Play play) {
+        double thisAmount = 0;
+        switch (play.type()) {
+            case "tragedy": // 비극
+                thisAmount = 40000;
+                if (perf.audience() > 30) {
+                    thisAmount += 1000 * (perf.audience() - 30);
+                }
+                break;
+            case "comedy": // 희극
+                thisAmount = 30000;
+                if (perf.audience() > 20) {
+                    thisAmount += 10000 + 500 * (perf.audience() - 20);
+                }
+                thisAmount += 300 * perf.audience();
+                break;
+            default:
+                throw new IllegalArgumentException(String.format("알 수 없는 장르: %s", play.type()));
+        }
+        return thisAmount;
     }
 }
