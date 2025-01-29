@@ -22,16 +22,16 @@ public class Statement {
             volumeCredits += volumeCreditsFor(perf);
 
             // 청구 내역을 출력한다.
-            result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), toUSD(amountFor(perf) / 100), perf.audience()));
+            result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
             totalAmount += amountFor(perf);
         }
-        result.append(String.format("총액: %s\n", toUSD(totalAmount / 100)));
+        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
         result.append(String.format("적립 포인트: %d점\n", volumeCredits));
         return result.toString();
     }
 
-    private String toUSD(double number) {
-        return NumberFormat.getCurrencyInstance(Locale.US).format(number);
+    private String formatUSD(double number) {
+        return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
     }
 
     private int volumeCreditsFor(Performance perf) {
