@@ -15,15 +15,16 @@ public class Statement {
 
     public String generate() {
         double totalAmount = 0;
-        int volumeCredits = 0;
         StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", invoice.customer()));
 
         for (Performance perf : invoice.performances()) {
-            volumeCredits += volumeCreditsFor(perf);
-
-            // 청구 내역을 출력한다.
             result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
             totalAmount += amountFor(perf);
+        }
+
+        int volumeCredits = 0;
+        for (Performance perf : invoice.performances()) {
+            volumeCredits += volumeCreditsFor(perf);
         }
         result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
         result.append(String.format("적립 포인트: %d점\n", volumeCredits));
