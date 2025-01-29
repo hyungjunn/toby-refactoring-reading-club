@@ -19,10 +19,8 @@ public class Statement {
         for (Performance perf : invoice.performances()) {
             result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
         }
-        double totalAmount = calculateTotalAmount();
-        int volumeCredits = calculateTotalVolumeCredits();
-        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
-        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
+        result.append(String.format("총액: %s\n", formatUSD(calculateTotalAmount())));
+        result.append(String.format("적립 포인트: %d점\n", calculateTotalVolumeCredits()));
         return result.toString();
     }
 
