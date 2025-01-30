@@ -46,17 +46,13 @@ public class Statement {
                 .mapToDouble(EnrichedPerformances::amount)
                 .sum();
 
-        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
-        result.append(String.format("적립 포인트: %d점\n", calculateTotalVolumeCredits()));
-        return result.toString();
-    }
+        int volumeCredits = data.performances.stream()
+                .mapToInt(EnrichedPerformances::volumeCredits)
+                .sum();
 
-    private int calculateTotalVolumeCredits() {
-        int result = 0;
-        for (Performance perf : invoice.performances()) {
-            result += volumeCreditsFor(perf);
-        }
-        return result;
+        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
+        result.append(String.format("적립 포인트: %d점\n", volumeCredits));
+        return result.toString();
     }
 
     private String formatUSD(double number) {
