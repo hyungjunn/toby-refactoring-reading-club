@@ -15,17 +15,31 @@ public class Statement {
     }
 
     public String generate() {
-        StatementData data = new StatementData(invoice.customer(), invoice.performances());
+        List<EnrichedPerformances> enrichedPerformances = invoice.performances().stream()
+                .map(p -> new EnrichedPerformances(p, playFor(p), amountFor(p), volumeCreditsFor(p)))
+                .toList();
+        StatementData data = new StatementData(invoice.customer(), enrichedPerformances);
         return renderPlainText(data);
     }
 
-    record StatementData(String customer, List<Performance> performances) {
+    record StatementData(String customer, List<EnrichedPerformances> performances) {
+    }
+
+    record EnrichedPerformances(
+            Performance performance,
+            Play play,
+            double amount,
+            int volumeCredits
+    ) {
     }
 
     private String renderPlainText(StatementData data) {
         StringBuilder result = new StringBuilder(String.format("청구 내역 (고객명: %s)\n", data.customer));
-        for (Performance perf : data.performances) {
-            result.append(String.format(" %s: %s (%d석)\n", playFor(perf).name(), formatUSD(amountFor(perf)), perf.audience()));
+        for (EnrichedPerformances perf : data.performances) {
+            result.append(String.format(" %s: %s (%d석)\n",
+                    perf.play().name(),
+                    formatUSD(perf.amount()),
+                    perf.performance().audience()));
         }
         result.append(String.format("총액: %s\n", formatUSD(calculateTotalAmount())));
         result.append(String.format("적립 포인트: %d점\n", calculateTotalVolumeCredits()));
