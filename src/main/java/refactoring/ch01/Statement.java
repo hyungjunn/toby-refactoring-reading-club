@@ -41,17 +41,14 @@ public class Statement {
                     formatUSD(perf.amount()),
                     perf.performance().audience()));
         }
-        result.append(String.format("총액: %s\n", formatUSD(calculateTotalAmount())));
+
+        double totalAmount = data.performances.stream()
+                .mapToDouble(EnrichedPerformances::amount)
+                .sum();
+
+        result.append(String.format("총액: %s\n", formatUSD(totalAmount)));
         result.append(String.format("적립 포인트: %d점\n", calculateTotalVolumeCredits()));
         return result.toString();
-    }
-
-    private double calculateTotalAmount() {
-        double result = 0;
-        for (Performance perf : invoice.performances()) {
-            result += amountFor(perf);
-        }
-        return result;
     }
 
     private int calculateTotalVolumeCredits() {
