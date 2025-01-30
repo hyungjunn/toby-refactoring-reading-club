@@ -7,20 +7,20 @@ import java.util.Map;
 
 public class Statement {
     private final Invoice invoice;
-    private final StatementDataGenerator calculator;
+    private final Map<String, Play> plays;
 
     public Statement(Invoice invoice, Map<String, Play> plays) {
         this.invoice = invoice;
-        this.calculator = new StatementDataGenerator(plays);
+        this.plays = plays;
     }
 
     public String generate() {
-        StatementData data = calculator.createStatementData(invoice);
+        StatementData data = createStatementData(invoice, plays);
         return renderPlainText(data);
     }
 
     public String generateHtml() {
-        StatementData data = calculator.createStatementData(invoice);
+        StatementData data = createStatementData(invoice, plays);
         return renderHtml(data);
     }
 
@@ -54,6 +54,26 @@ public class Statement {
 
     private String formatUSD(double number) {
         return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
+    }
+
+    private StatementData createStatementData(Invoice invoice, Map<String, Play> plays) {
+        return new StatementData(
+                invoice.customer(),
+                invoice.performances().stream()
+                        .map(p -> enrichPerformance(p, plays))
+                        .toList()
+        );
+    }
+
+    private EnrichedPerformances enrichPerformance(Performance p, Map<String, Play> plays) {
+        Play play = plays.get(p.playID());
+        PerformanceCalculator calculator = CalculatorFactory.create(p, play);
+        return new EnrichedPerformances(
+                p,
+                play,
+                calculator.getAmount(),
+                calculator.getVolumeCredits()
+        );
     }
 
     record StatementData(String customer, List<EnrichedPerformances> performances) {
