@@ -7,11 +7,11 @@ import java.util.Map;
 
 public class Statement {
     private final Invoice invoice;
-    private final PerformanceCalculator calculator;
+    private final StatementDataGenerator calculator;
 
     public Statement(Invoice invoice, Map<String, Play> plays) {
         this.invoice = invoice;
-        this.calculator = new PerformanceCalculator(plays);
+        this.calculator = new StatementDataGenerator(plays);
     }
 
     public String generate() {

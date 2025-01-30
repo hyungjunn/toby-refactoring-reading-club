@@ -3,10 +3,10 @@ package refactoring.ch01;
 import java.util.List;
 import java.util.Map;
 
-class PerformanceCalculator {
+class StatementDataGenerator {
     private final Map<String, Play> plays;
 
-    PerformanceCalculator(Map<String, Play> plays) {
+    StatementDataGenerator(Map<String, Play> plays) {
         this.plays = plays;
     }
 
