@@ -7,18 +7,15 @@ import java.util.Map;
 
 public class Statement {
     private final Invoice invoice;
-    private final Map<String, Play> plays;
+    private final PerformanceCalculator calculator;
 
     public Statement(Invoice invoice, Map<String, Play> plays) {
         this.invoice = invoice;
-        this.plays = plays;
+        this.calculator = new PerformanceCalculator(plays);
     }
 
     public String generate() {
-        List<EnrichedPerformances> enrichedPerformances = invoice.performances().stream()
-                .map(p -> new EnrichedPerformances(p, playFor(p), amountFor(p), volumeCreditsFor(p)))
-                .toList();
-        StatementData data = new StatementData(invoice.customer(), enrichedPerformances);
+        StatementData data = calculator.createStatementData(invoice);
         return renderPlainText(data);
     }
 
@@ -59,38 +56,53 @@ public class Statement {
         return NumberFormat.getCurrencyInstance(Locale.US).format(number / 100);
     }
 
-    private int volumeCreditsFor(Performance perf) {
-        int result = 0;
-        result += Math.max(perf.audience() - 30, 0);
-        if ("comedy".equals(playFor(perf).type())) {
-            result += (int) Math.floor((double) perf.audience() / 5);
-        }
-        return result;
-    }
+    static class PerformanceCalculator {
+        private final Map<String, Play> plays;
 
-    private Play playFor(Performance perf) {
-        return plays.get(perf.playID());
-    }
-
-    private double amountFor(Performance perf) {
-        double result = 0;
-        switch (playFor(perf).type()) {
-            case "tragedy": // 비극
-                result = 40000;
-                if (perf.audience() > 30) {
-                    result += 1000 * (perf.audience() - 30);
-                }
-                break;
-            case "comedy": // 희극
-                result = 30000;
-                if (perf.audience() > 20) {
-                    result += 10000 + 500 * (perf.audience() - 20);
-                }
-                result += 300 * perf.audience();
-                break;
-            default:
-                throw new IllegalArgumentException(String.format("알 수 없는 장르: %s", playFor(perf).type()));
+        PerformanceCalculator(Map<String, Play> plays) {
+            this.plays = plays;
         }
-        return result;
+
+        public StatementData createStatementData(Invoice invoice) {
+            List<EnrichedPerformances> enrichedPerformances = invoice.performances().stream()
+                    .map(p -> new EnrichedPerformances(p, playFor(p), amountFor(p), volumeCreditsFor(p)))
+                    .toList();
+            return new StatementData(invoice.customer(), enrichedPerformances);
+        }
+
+        private int volumeCreditsFor(Performance perf) {
+            int result = 0;
+            result += Math.max(perf.audience() - 30, 0);
+            if ("comedy".equals(playFor(perf).type())) {
+                result += (int) Math.floor((double) perf.audience() / 5);
+            }
+            return result;
+        }
+
+        private Play playFor(Performance perf) {
+            return plays.get(perf.playID());
+        }
+
+        private double amountFor(Performance perf) {
+            double result = 0;
+            switch (playFor(perf).type()) {
+                case "tragedy": // 비극
+                    result = 40000;
+                    if (perf.audience() > 30) {
+                        result += 1000 * (perf.audience() - 30);
+                    }
+                    break;
+                case "comedy": // 희극
+                    result = 30000;
+                    if (perf.audience() > 20) {
+                        result += 10000 + 500 * (perf.audience() - 20);
+                    }
+                    result += 300 * perf.audience();
+                    break;
+                default:
+                    throw new IllegalArgumentException(String.format("알 수 없는 장르: %s", playFor(perf).type()));
+            }
+            return result;
+        }
     }
 }
