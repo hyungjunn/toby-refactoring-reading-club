@@ -20,10 +20,12 @@ public class DataLoader {
     }
 
     public static List<Invoice> loadInvoices(String filePath) {
-        return loadJsonFile(filePath, new TypeReference<List<Invoice>>() {});
+        return loadJsonFile(filePath, new TypeReference<List<Invoice>>() {
+        });
     }
 
     public static Map<String, Play> loadPlays(String filePath) {
-        return loadJsonFile(filePath, new TypeReference<Map<String, Play>>() {});
+        return loadJsonFile(filePath, new TypeReference<Map<String, Play>>() {
+        });
     }
 }
